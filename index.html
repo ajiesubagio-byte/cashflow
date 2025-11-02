@@ -21,8 +21,6 @@
     th,td{padding:8px;border-bottom:1px solid #eef2ff;text-align:left;font-size:14px}
     th{font-weight:600;color:#111827}
     .muted{color:var(--muted)}
-    .actions button{margin-right:6px}
-    .filters{display:flex;gap:8px;flex-wrap:wrap}
     .summary{display:flex;gap:12px;margin-top:12px}
     .stat{background:#f8fafc;padding:10px;border-radius:10px;min-width:120px}
     .empty{padding:20px;text-align:center;color:var(--muted)}
@@ -35,89 +33,51 @@
     <p class="muted">Masukkan transaksi, pilih jenis (Masuk / Keluar) dan kategori (Sandang / Pangan). Lihat laporan harian, bulanan, dan tahunan.</p>
 
     <div class="grid">
-      <!-- Left: daftar & laporan -->
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <strong>Daftar Transaksi</strong>
-          <div class="filters">
-            <select id="filterType" title="Filter jenis">
-              <option value="all">Semua Jenis</option>
-              <option value="Masuk">Masuk</option>
-              <option value="Keluar">Keluar</option>
-            </select>
-            <select id="filterCategory" title="Filter kategori">
-              <option value="all">Semua Kategori</option>
-              <option value="Sandang">Sandang</option>
-              <option value="Pangan">Pangan</option>
-            </select>
-            <input id="searchText" type="text" placeholder="cari keterangan..." />
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="filterType"><option value="all">Semua Jenis</option><option value="Masuk">Masuk</option><option value="Keluar">Keluar</option></select>
+            <select id="filterCategory"><option value="all">Semua Kategori</option><option value="Sandang">Sandang</option><option value="Pangan">Pangan</option></select>
+            <input id="searchText" type="text" placeholder="cari keterangan...">
             <button class="btn ghost small" id="resetFilters">Reset</button>
           </div>
         </div>
 
-        <div id="listWrap">
-          <table id="txTable">
-            <thead>
-              <tr><th>Tanggal</th><th>Keterangan</th><th>Jenis</th><th>Kategori</th><th>Nominal</th><th>Aksi</th></tr>
-            </thead>
-            <tbody id="txBody"></tbody>
-          </table>
-          <div id="emptyList" class="empty">Belum ada transaksi.</div>
+        <table id="txTable"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jenis</th><th>Kategori</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody id="txBody"></tbody></table>
+        <div id="emptyList" class="empty">Belum ada transaksi.</div>
+
+        <div class="summary">
+          <div class="stat"><div class="muted">Total Masuk</div><div id="totalIn">Rp 0</div></div>
+          <div class="stat"><div class="muted">Total Keluar</div><div id="totalOut">Rp 0</div></div>
+          <div class="stat"><div class="muted">Saldo (Net)</div><div id="net">Rp 0</div></div>
         </div>
 
-        <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
-          <div class="summary">
-            <div class="stat"><div class="muted">Total Masuk</div><div id="totalIn">Rp 0</div></div>
-            <div class="stat"><div class="muted">Total Keluar</div><div id="totalOut">Rp 0</div></div>
-            <div class="stat"><div class="muted">Saldo (Net)</div><div id="net">Rp 0</div></div>
-          </div>
-          <div>
-            <button class="btn small" id="exportJson">Export JSON</button>
-            <button class="btn ghost small" id="clearAll">Clear Semua</button>
-          </div>
+        <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn small" id="exportJson">Export JSON</button>
+          <button class="btn ghost small" id="clearAll">Clear Semua</button>
         </div>
 
         <hr style="margin:14px 0;border:none;border-top:1px dashed #eef2ff">
 
-        <strong>Laporan</strong>
-        <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-          <select id="reportRange">
-            <option value="daily">Harian</option>
-            <option value="monthly">Bulanan</option>
-            <option value="yearly">Tahunan</option>
-          </select>
-          <input id="reportDate" type="date" />
-          <select id="reportCategory">
-            <option value="all">Semua Kategori</option>
-            <option value="Sandang">Sandang</option>
-            <option value="Pangan">Pangan</option>
-          </select>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="reportRange"><option value="daily">Harian</option><option value="monthly">Bulanan</option><option value="yearly">Tahunan</option></select>
+          <input id="reportDate" type="date">
+          <select id="reportCategory"><option value="all">Semua Kategori</option><option value="Sandang">Sandang</option><option value="Pangan">Pangan</option></select>
           <button class="btn small" id="runReport">Jalankan</button>
         </div>
 
         <div id="reportResult" style="margin-top:12px"></div>
       </div>
 
-      <!-- Right: form input -->
       <div class="card">
         <strong id="formTitle">Tambah Transaksi</strong>
-        <p class="muted">Isikan data transaksi lalu klik <em>Tambah</em>. Untuk mengubah, klik edit pada daftar dan simpan.</p>
-
         <div style="margin-top:8px">
-          <label for="date">Tanggal</label>
-          <input id="date" type="date" />
-
-          <label for="nominal" style="margin-top:8px">Nominal (Rp)</label>
-          <input id="nominal" type="number" min="0" placeholder="contoh: 50000" />
-
-          <label for="type" style="margin-top:8px">Jenis</label>
-          <select id="type"><option value="Masuk">Masuk</option><option value="Keluar">Keluar</option></select>
-
-          <label for="category" style="margin-top:8px">Kategori</label>
-          <select id="category"><option value="Sandang">Sandang</option><option value="Pangan">Pangan</option></select>
-
-          <label for="note" style="margin-top:8px">Keterangan</label>
-          <input id="note" type="text" placeholder="opsional: contoh 'beli beras'" />
+          <label>Tanggal</label><input id="date" type="date">
+          <label style="margin-top:8px">Nominal (Rp)</label><input id="nominal" type="number" min="0">
+          <label style="margin-top:8px">Jenis</label><select id="type"><option value="Masuk">Masuk</option><option value="Keluar">Keluar</option></select>
+          <label style="margin-top:8px">Kategori</label><select id="category"><option value="Sandang">Sandang</option><option value="Pangan">Pangan</option></select>
+          <label style="margin-top:8px">Keterangan</label><input id="note" type="text">
 
           <div style="margin-top:12px;display:flex;gap:8px">
             <button class="btn" id="addBtn">Tambah</button>
@@ -125,19 +85,16 @@
             <button class="btn ghost" id="cancelEdit" style="display:none">Batal</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
- <script>
+<script>
 const API = "https://script.google.com/macros/s/AKfycbwRU_Is-jLighxJPkQMktm-B-ydejNvzrFly88JE_DQxKG2JpKXSwxgTnNw_oui4KPkAg/exec";
-
 let entries = [];
 let editingId = null;
 
 const qs = s => document.querySelector(s);
-const qsa = s => Array.from(document.querySelectorAll(s));
 const money = n => 'Rp ' + Number(n).toLocaleString('id-ID');
 
 const txBody = qs('#txBody');
@@ -155,167 +112,47 @@ const addBtn = qs('#addBtn');
 const updateBtn = qs('#updateBtn');
 const cancelEdit = qs('#cancelEdit');
 
-const filterType = qs('#filterType');
-const filterCategory = qs('#filterCategory');
-const searchText = qs('#searchText');
-const resetFilters = qs('#resetFilters');
-
-const reportRange = qs('#reportRange');
-const reportDate = qs('#reportDate');
-const reportCategory = qs('#reportCategory');
-const runReport = qs('#runReport');
-const reportResult = qs('#reportResult');
+function formatDateDisplay(d){return new Date(d).toLocaleDateString("id-ID",{day:'2-digit',month:'2-digit',year:'numeric'});}
+function formatDateInput(d){return new Date(d).toISOString().slice(0,10);}
 
 async function load(){
-  const res = await fetch(API + "?action=getAll");
+  const res = await fetch(API+"?action=getAll");
   entries = await res.json();
   renderList();
 }
 
-function clearForm(){
-  dateEl.value = "";
-  nominalEl.value = "";
-  typeEl.value = "Masuk";
-  categoryEl.value = "Sandang";
-  noteEl.value = "";
-}
+function clearForm(){dateEl.value="";nominalEl.value="";typeEl.value="Masuk";categoryEl.value="Sandang";noteEl.value="";}
+function toggleEdit(on){qs('#formTitle').textContent=on?'Ubah Transaksi':'Tambah Transaksi';addBtn.style.display=on?'none':'inline-block';updateBtn.style.display=on?'inline-block':'none';cancelEdit.style.display=on?'inline-block':'none';}
 
-function toggleEditMode(on){
-  qs('#formTitle').textContent = on ? 'Ubah Transaksi' : 'Tambah Transaksi';
-  addBtn.style.display = on ? 'none' : 'inline-block';
-  updateBtn.style.display = on ? 'inline-block' : 'none';
-  cancelEdit.style.display = on ? 'inline-block' : 'none';
-}
-
-addBtn.addEventListener('click', async ()=>{
-  const d = dateEl.value || new Date().toISOString().slice(0,10);
-  const nominal = Number(nominalEl.value || 0);
-  if(nominal <= 0) return alert('Nominal harus > 0');
-
-  const params = new URLSearchParams({
-    action: "add",
-    date: d,
-    nominal,
-    type: typeEl.value,
-    category: categoryEl.value,
-    note: noteEl.value.trim()
-  });
-
-  await fetch(API + "?" + params.toString());
-  clearForm();
-  load();
-});
-
-updateBtn.addEventListener('click', async ()=>{
-  if(!editingId) return;
-
-  const params = new URLSearchParams({
-    action: "update",
-    id: editingId,
-    date: dateEl.value,
-    nominal: nominalEl.value,
-    type: typeEl.value,
-    category: categoryEl.value,
-    note: noteEl.value.trim()
-  });
-
-  await fetch(API + "?" + params.toString());
-  editingId = null;
-  toggleEditMode(false);
-  clearForm();
-  load();
-});
-
-cancelEdit.addEventListener('click', ()=>{
-  editingId = null;
-  toggleEditMode(false);
-  clearForm();
-});
-
-async function deleteItem(id){
-  if(!confirm("Hapus transaksi ini?")) return;
-  await fetch(API + "?action=delete&id=" + id);
-  load();
-}
-
-function editItem(id){
-  const e = entries.find(x => x.id === id);
-  editingId = id;
-  dateEl.value = formatDateInput(e.date);
-  nominalEl.value = e.nominal;
-  typeEl.value = e.type;
-  categoryEl.value = e.category;
-  noteEl.value = e.note;
-  toggleEditMode(true);
-}
-
-function escapeHtml(s){
-  s = (s === undefined || s === null) ? "" : String(s);
-  return s.replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-// === Tambahkan di sini (SEBELUM renderList) ===
-function formatDateDisplay(dateString){
-  const d = new Date(dateString);
-  if(isNaN(d)) return dateString;
-  const day = String(d.getDate()).padStart(2,'0');
-  const month = String(d.getMonth()+1).padStart(2,'0');
-  const year = d.getFullYear();
-  return `${day}-${month}-${year}`;
-}
-
-function formatDateInput(dateString){
-  const d = new Date(dateString);
-  if(isNaN(d)) return dateString;
-  return d.toISOString().split("T")[0];
-}
-// === Sampai sini ===
-
-
-// ↓↓↓ renderList tetap seperti biasa, hanya diganti bagian tanggal-nya ↓↓↓
-
+async function deleteItem(id){if(confirm("Hapus?")){await fetch(API+"?action=delete&id="+id);load();}}
+function editItem(id){let x=entries.find(v=>v.id==id);editingId=id;dateEl.value=formatDateInput(x.date);nominalEl.value=x.nominal;typeEl.value=x.type;categoryEl.value=x.category;noteEl.value=x.note;toggleEdit(true);}
 
 function renderList(){
-  let list = entries.slice().sort((a,b)=> b.date.localeCompare(a.date));
-
-  const ft = filterType.value;
-  const fc = filterCategory.value;
-  const q = searchText.value.toLowerCase();
-
-  if(ft !== 'all') list = list.filter(x=> x.type === ft);
-  if(fc !== 'all') list = list.filter(x=> x.category === fc);
-  if(q) list = list.filter(x=> (x.note||"").toLowerCase().includes(q));
-
-  txBody.innerHTML = "";
-  if(list.length === 0){
-    qs('#txTable').style.display = 'none';
-    emptyList.style.display = 'block';
-  } else {
-    qs('#txTable').style.display = 'table';
-    emptyList.style.display = 'none';
-    list.forEach(it=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${formatDateDisplay(it.date)}</td>
-        <td>${escapeHtml(it.note || '')}</td>
-        <td>${it.type}</td>
-        <td>${it.category}</td>
-        <td>${money(it.nominal)}</td>
-        <td>
-          <button class="btn ghost small" onclick="editItem('${it.id}')">Edit</button>
-          <button class="btn ghost small" onclick="deleteItem('${it.id}')">Hapus</button>
-        </td>`;
-      txBody.appendChild(tr);
-    });
-  }
-
-  const tin = entries.filter(x=> x.type === "Masuk").reduce((s,i)=>s+Number(i.nominal),0);
-  const tout = entries.filter(x=> x.type === "Keluar").reduce((s,i)=>s+Number(i.nominal),0);
+  let list = [...entries].sort((a,b)=>b.date.localeCompare(a.date));
+  txBody.innerHTML="";
+  if(!list.length){qs("#txTable").style.display="none";emptyList.style.display="block";return;}
+  qs("#txTable").style.display="table";emptyList.style.display="none";
+  list.forEach(x=>{
+    txBody.insertAdjacentHTML("beforeend",`
+    <tr>
+      <td>${formatDateDisplay(x.date)}</td>
+      <td>${x.note||""}</td>
+      <td>${x.type}</td>
+      <td>${x.category}</td>
+      <td>${money(x.nominal)}</td>
+      <td><button class="btn ghost small" onclick="editItem('${x.id}')">Edit</button>
+      <button class="btn ghost small" onclick="deleteItem('${x.id}')">Hapus</button></td>
+    </tr>`);});
+  const tin = entries.filter(x=>x.type=="Masuk").reduce((s,v)=>s+Number(v.nominal),0);
+  const tout = entries.filter(x=>x.type=="Keluar").reduce((s,v)=>s+Number(v.nominal),0);
   totalInEl.textContent = money(tin);
   totalOutEl.textContent = money(tout);
-  netEl.textContent = money(tin - tout);
+  netEl.textContent = money(tin-tout);
 }
 
+addBtn.onclick=async()=>{if(nominalEl.value<=0)return alert("Nominal harus > 0");await fetch(API+"?action=add&"+new URLSearchParams({date:dateEl.value,nominal:nominalEl.value,type:typeEl.value,category:categoryEl.value,note:noteEl.value}));clearForm();load();}
+updateBtn.onclick=async()=>{await fetch(API+"?action=update&"+new URLSearchParams({id:editingId,date:dateEl.value,nominal:nominalEl.value,type:typeEl.value,category:categoryEl.value,note:noteEl.value}));editingId=null;toggleEdit(false);clearForm();load();}
+cancelEdit.onclick=()=>{editingId=null;toggleEdit(false);clearForm();}
 load();
 </script>
 </body>
