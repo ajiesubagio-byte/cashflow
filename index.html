@@ -31,7 +31,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Cashflow � Input & Laporan</h1>
+    <h1>Cashflow — Input & Laporan</h1>
     <p class="muted">Masukkan transaksi, pilih jenis (Masuk / Keluar) dan kategori (Sandang / Pangan). Lihat laporan harian, bulanan, dan tahunan.</p>
 
     <div class="grid">
@@ -241,7 +241,7 @@ async function deleteItem(id){
 function editItem(id){
   const e = entries.find(x => x.id === id);
   editingId = id;
-  dateEl.value = e.date;
+  dateEl.value = formatDateInput(e.date);
   nominalEl.value = e.nominal;
   typeEl.value = e.type;
   categoryEl.value = e.category;
@@ -253,6 +253,30 @@ function escapeHtml(s){
   s = (s === undefined || s === null) ? "" : String(s);
   return s.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
+
+// === Tambahkan di sini (SEBELUM renderList) ===
+function formatDateDisplay(dateString){
+  const d = new Date(dateString);
+  if(isNaN(d)) return dateString;
+  const day = String(d.getDate()).padStart(2,'0');
+  const month = String(d.getMonth()+1).padStart(2,'0');
+  const year = d.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
+function formatDateInput(dateString){
+  const d = new Date(dateString);
+  if(isNaN(d)) return dateString;
+  return d.toISOString().split("T")[0];
+}
+// === Sampai sini ===
+
+
+// ↓↓↓ renderList tetap seperti biasa, hanya diganti bagian tanggal-nya ↓↓↓
+function renderList(){
+  let list = entries.slice().sort((a,b)=> b.date.localeCompare(a.date));
+  ...
+
 
 function renderList(){
   let list = entries.slice().sort((a,b)=> b.date.localeCompare(a.date));
@@ -275,7 +299,7 @@ function renderList(){
     list.forEach(it=>{
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${it.date}</td>
+        <td>${formatDateDisplay(it.date)}</td>
         <td>${escapeHtml(it.note || '')}</td>
         <td>${it.type}</td>
         <td>${it.category}</td>
